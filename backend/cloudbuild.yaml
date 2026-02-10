@@ -22,12 +22,10 @@ steps:
     args:
       - '-c'
       - |
-        cat > /tmp/env.yaml << ENVEOF
-        NODE_ENV: production
-        DATABASE_URL: "postgres://postgres:${_DB_PASSWORD}@/truckflow?host=/cloudsql/${PROJECT_ID}:${_REGION}:truckflow-db"
-        REDIS_URL: "redis://${_REDIS_IP}:6379"
-        ENVEOF
-
+        echo "NODE_ENV: production" > /tmp/env.yaml
+        echo "DATABASE_URL: postgres://postgres:${_DB_PASSWORD}@/truckflow?host=/cloudsql/${PROJECT_ID}:${_REGION}:truckflow-db" >> /tmp/env.yaml
+        echo "REDIS_URL: redis://${_REDIS_IP}:6379" >> /tmp/env.yaml
+        echo "=== Env file contents ===" && cat /tmp/env.yaml && echo "========================="
         gcloud run deploy truckflow-api \
           --image=${_REGION}-docker.pkg.dev/${PROJECT_ID}/truckflow/api:${SHORT_SHA} \
           --region=${_REGION} \
