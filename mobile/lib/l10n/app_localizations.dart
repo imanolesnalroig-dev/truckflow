@@ -1,144 +1,336 @@
-// Placeholder for Flutter localization
-// Full implementation would use flutter_localizations and intl packages
-// with .arb files for each supported language
+import 'package:flutter/material.dart';
 
 class AppLocalizations {
-  final String locale;
+  final Locale locale;
 
   AppLocalizations(this.locale);
 
-  static AppLocalizations of(String locale) {
-    return AppLocalizations(locale);
+  static AppLocalizations of(BuildContext context) {
+    return Localizations.of<AppLocalizations>(context, AppLocalizations) ??
+        AppLocalizations(const Locale('en'));
   }
 
-  // Common
-  String get appName => _localizedValues[locale]?['appName'] ?? 'TruckFlow';
-  String get cancel => _localizedValues[locale]?['cancel'] ?? 'Cancel';
-  String get save => _localizedValues[locale]?['save'] ?? 'Save';
-  String get delete => _localizedValues[locale]?['delete'] ?? 'Delete';
-  String get edit => _localizedValues[locale]?['edit'] ?? 'Edit';
-  String get ok => _localizedValues[locale]?['ok'] ?? 'OK';
-  String get error => _localizedValues[locale]?['error'] ?? 'Error';
-  String get loading => _localizedValues[locale]?['loading'] ?? 'Loading...';
+  static const LocalizationsDelegate<AppLocalizations> delegate =
+      _AppLocalizationsDelegate();
 
-  // Navigation
-  String get map => _localizedValues[locale]?['map'] ?? 'Map';
-  String get parking => _localizedValues[locale]?['parking'] ?? 'Parking';
-  String get drivingTime => _localizedValues[locale]?['drivingTime'] ?? 'Time';
-  String get profile => _localizedValues[locale]?['profile'] ?? 'Profile';
+  static const List<Locale> supportedLocales = [
+    Locale('en'),
+    Locale('pl'),
+    Locale('de'),
+    Locale('ro'),
+    Locale('es'),
+    Locale('bg'),
+    Locale('lt'),
+    Locale('tr'),
+  ];
 
-  // Onboarding
-  String get getStarted => _localizedValues[locale]?['getStarted'] ?? 'Get Started';
-  String get next => _localizedValues[locale]?['next'] ?? 'Next';
-  String get skip => _localizedValues[locale]?['skip'] ?? 'Skip';
-  String get alreadyHaveAccount => _localizedValues[locale]?['alreadyHaveAccount'] ?? 'Already have an account? Sign in';
-
-  // Auth
-  String get signIn => _localizedValues[locale]?['signIn'] ?? 'Sign In';
-  String get signUp => _localizedValues[locale]?['signUp'] ?? 'Sign Up';
-  String get email => _localizedValues[locale]?['email'] ?? 'Email';
-  String get password => _localizedValues[locale]?['password'] ?? 'Password';
-  String get forgotPassword => _localizedValues[locale]?['forgotPassword'] ?? 'Forgot password?';
-  String get continueWithGoogle => _localizedValues[locale]?['continueWithGoogle'] ?? 'Continue with Google';
-
-  // Map
-  String get whereTo => _localizedValues[locale]?['whereTo'] ?? 'Where to?';
-  String get reportHazard => _localizedValues[locale]?['reportHazard'] ?? 'Report Hazard';
-  String get untilBreak => _localizedValues[locale]?['untilBreak'] ?? 'until break';
-
-  // Hazards
-  String get police => _localizedValues[locale]?['police'] ?? 'Police';
-  String get camera => _localizedValues[locale]?['camera'] ?? 'Camera';
-  String get accident => _localizedValues[locale]?['accident'] ?? 'Accident';
-  String get roadWorks => _localizedValues[locale]?['roadWorks'] ?? 'Road Works';
-  String get closed => _localizedValues[locale]?['closed'] ?? 'Closed';
-  String get hazard => _localizedValues[locale]?['hazard'] ?? 'Hazard';
-  String get weather => _localizedValues[locale]?['weather'] ?? 'Weather';
-  String get border => _localizedValues[locale]?['border'] ?? 'Border';
-
-  // Parking
-  String get truckParking => _localizedValues[locale]?['truckParking'] ?? 'Truck Parking';
-  String get free => _localizedValues[locale]?['free'] ?? 'Free';
-  String get secured => _localizedValues[locale]?['secured'] ?? 'Secured';
-  String get available => _localizedValues[locale]?['available'] ?? 'Available';
-  String get addParking => _localizedValues[locale]?['addParking'] ?? 'Add Parking';
-
-  // Compliance
-  String get drivingTimeTitle => _localizedValues[locale]?['drivingTimeTitle'] ?? 'Driving Time';
-  String get currentStatus => _localizedValues[locale]?['currentStatus'] ?? 'Current Status';
-  String get driving => _localizedValues[locale]?['driving'] ?? 'DRIVING';
-  String get resting => _localizedValues[locale]?['resting'] ?? 'RESTING';
-  String get onBreak => _localizedValues[locale]?['onBreak'] ?? 'ON BREAK';
-  String get startBreak => _localizedValues[locale]?['startBreak'] ?? 'Start Break';
-  String get startRest => _localizedValues[locale]?['startRest'] ?? 'Start Rest';
-  String get dailyLimits => _localizedValues[locale]?['dailyLimits'] ?? 'Daily Limits';
-  String get weeklyLimits => _localizedValues[locale]?['weeklyLimits'] ?? 'Weekly Limits';
-
-  // Profile
-  String get myVehicle => _localizedValues[locale]?['myVehicle'] ?? 'My Vehicle';
-  String get tripHistory => _localizedValues[locale]?['tripHistory'] ?? 'Trip History';
-  String get savedPlaces => _localizedValues[locale]?['savedPlaces'] ?? 'Saved Places';
-  String get offlineMaps => _localizedValues[locale]?['offlineMaps'] ?? 'Offline Maps';
-  String get language => _localizedValues[locale]?['language'] ?? 'Language';
-  String get appearance => _localizedValues[locale]?['appearance'] ?? 'Appearance';
-  String get notifications => _localizedValues[locale]?['notifications'] ?? 'Notifications';
-  String get helpSupport => _localizedValues[locale]?['helpSupport'] ?? 'Help & Support';
-  String get about => _localizedValues[locale]?['about'] ?? 'About TruckFlow';
-  String get signOut => _localizedValues[locale]?['signOut'] ?? 'Sign Out';
-
-  static const Map<String, Map<String, String>> _localizedValues = {
+  static final Map<String, Map<String, String>> _localizedValues = {
     'en': {
       'appName': 'TruckFlow',
       'cancel': 'Cancel',
       'save': 'Save',
+      'delete': 'Delete',
+      'edit': 'Edit',
+      'ok': 'OK',
+      'error': 'Error',
+      'loading': 'Loading...',
       'map': 'Map',
       'parking': 'Parking',
       'drivingTime': 'Time',
       'profile': 'Profile',
+      'getStarted': 'Get Started',
+      'next': 'Next',
+      'skip': 'Skip',
+      'alreadyHaveAccount': 'Already have an account? Sign in',
+      'signIn': 'Sign In',
+      'signUp': 'Sign Up',
+      'email': 'Email',
+      'password': 'Password',
+      'forgotPassword': 'Forgot password?',
+      'continueWithGoogle': 'Continue with Google',
+      'whereTo': 'Where to?',
+      'reportHazard': 'Report Hazard',
+      'untilBreak': 'until break',
+      'police': 'Police',
+      'camera': 'Camera',
+      'accident': 'Accident',
+      'roadWorks': 'Road Works',
+      'closed': 'Closed',
+      'hazard': 'Hazard',
+      'weather': 'Weather',
+      'border': 'Border',
+      'truckParking': 'Truck Parking',
+      'free': 'Free',
+      'secured': 'Secured',
+      'available': 'Available',
+      'addParking': 'Add Parking',
+      'drivingTimeTitle': 'Driving Time',
+      'currentStatus': 'Current Status',
+      'driving': 'DRIVING',
+      'resting': 'RESTING',
+      'onBreak': 'ON BREAK',
+      'startBreak': 'Start Break',
+      'startRest': 'Start Rest',
+      'dailyLimits': 'Daily Limits',
+      'weeklyLimits': 'Weekly Limits',
+      'myVehicle': 'My Vehicle',
+      'tripHistory': 'Trip History',
+      'savedPlaces': 'Saved Places',
+      'offlineMaps': 'Offline Maps',
+      'language': 'Language',
+      'appearance': 'Appearance',
+      'notifications': 'Notifications',
+      'helpSupport': 'Help & Support',
+      'about': 'About TruckFlow',
+      'signOut': 'Sign Out',
     },
     'pl': {
       'appName': 'TruckFlow',
       'cancel': 'Anuluj',
       'save': 'Zapisz',
+      'delete': 'Usuń',
+      'edit': 'Edytuj',
+      'ok': 'OK',
+      'error': 'Błąd',
+      'loading': 'Ładowanie...',
       'map': 'Mapa',
       'parking': 'Parking',
       'drivingTime': 'Czas',
       'profile': 'Profil',
+      'getStarted': 'Rozpocznij',
+      'next': 'Dalej',
+      'skip': 'Pomiń',
+      'alreadyHaveAccount': 'Masz już konto? Zaloguj się',
       'signIn': 'Zaloguj się',
-      'signOut': 'Wyloguj się',
+      'signUp': 'Zarejestruj się',
       'email': 'Email',
       'password': 'Hasło',
+      'forgotPassword': 'Zapomniałeś hasła?',
+      'continueWithGoogle': 'Kontynuuj z Google',
+      'whereTo': 'Dokąd?',
+      'reportHazard': 'Zgłoś zagrożenie',
+      'untilBreak': 'do przerwy',
+      'police': 'Policja',
+      'camera': 'Fotoradar',
+      'accident': 'Wypadek',
+      'roadWorks': 'Roboty drogowe',
+      'closed': 'Zamknięte',
+      'hazard': 'Zagrożenie',
+      'weather': 'Pogoda',
+      'border': 'Granica',
+      'truckParking': 'Parking dla ciężarówek',
+      'free': 'Bezpłatny',
+      'secured': 'Strzeżony',
+      'available': 'Dostępne',
+      'addParking': 'Dodaj parking',
+      'drivingTimeTitle': 'Czas jazdy',
+      'currentStatus': 'Aktualny status',
+      'driving': 'JAZDA',
+      'resting': 'ODPOCZYNEK',
+      'onBreak': 'PRZERWA',
+      'startBreak': 'Rozpocznij przerwę',
+      'startRest': 'Rozpocznij odpoczynek',
+      'dailyLimits': 'Limity dzienne',
+      'weeklyLimits': 'Limity tygodniowe',
+      'myVehicle': 'Mój pojazd',
+      'tripHistory': 'Historia tras',
+      'savedPlaces': 'Zapisane miejsca',
+      'offlineMaps': 'Mapy offline',
+      'language': 'Język',
+      'appearance': 'Wygląd',
+      'notifications': 'Powiadomienia',
+      'helpSupport': 'Pomoc i wsparcie',
+      'about': 'O TruckFlow',
+      'signOut': 'Wyloguj się',
     },
     'de': {
       'appName': 'TruckFlow',
       'cancel': 'Abbrechen',
       'save': 'Speichern',
+      'delete': 'Löschen',
+      'edit': 'Bearbeiten',
+      'ok': 'OK',
+      'error': 'Fehler',
+      'loading': 'Laden...',
       'map': 'Karte',
       'parking': 'Parken',
       'drivingTime': 'Zeit',
       'profile': 'Profil',
+      'getStarted': 'Loslegen',
+      'next': 'Weiter',
+      'skip': 'Überspringen',
+      'alreadyHaveAccount': 'Haben Sie bereits ein Konto? Anmelden',
       'signIn': 'Anmelden',
+      'signUp': 'Registrieren',
+      'email': 'E-Mail',
+      'password': 'Passwort',
+      'forgotPassword': 'Passwort vergessen?',
+      'continueWithGoogle': 'Mit Google fortfahren',
+      'whereTo': 'Wohin?',
+      'reportHazard': 'Gefahr melden',
+      'untilBreak': 'bis zur Pause',
+      'police': 'Polizei',
+      'camera': 'Blitzer',
+      'accident': 'Unfall',
+      'roadWorks': 'Baustelle',
+      'closed': 'Gesperrt',
+      'hazard': 'Gefahr',
+      'weather': 'Wetter',
+      'border': 'Grenze',
+      'truckParking': 'LKW-Parkplatz',
+      'free': 'Kostenlos',
+      'secured': 'Bewacht',
+      'available': 'Verfügbar',
+      'addParking': 'Parkplatz hinzufügen',
+      'drivingTimeTitle': 'Fahrzeit',
+      'currentStatus': 'Aktueller Status',
+      'driving': 'FAHREN',
+      'resting': 'RUHEZEIT',
+      'onBreak': 'PAUSE',
+      'startBreak': 'Pause starten',
+      'startRest': 'Ruhezeit starten',
+      'dailyLimits': 'Tageslimits',
+      'weeklyLimits': 'Wochenlimits',
+      'myVehicle': 'Mein Fahrzeug',
+      'tripHistory': 'Fahrtverlauf',
+      'savedPlaces': 'Gespeicherte Orte',
+      'offlineMaps': 'Offline-Karten',
+      'language': 'Sprache',
+      'appearance': 'Erscheinungsbild',
+      'notifications': 'Benachrichtigungen',
+      'helpSupport': 'Hilfe & Support',
+      'about': 'Über TruckFlow',
       'signOut': 'Abmelden',
     },
     'ro': {
       'appName': 'TruckFlow',
       'cancel': 'Anulează',
       'save': 'Salvează',
+      'delete': 'Șterge',
+      'edit': 'Editează',
+      'ok': 'OK',
+      'error': 'Eroare',
+      'loading': 'Se încarcă...',
       'map': 'Hartă',
       'parking': 'Parcare',
       'drivingTime': 'Timp',
       'profile': 'Profil',
+      'signOut': 'Deconectare',
     },
     'es': {
       'appName': 'TruckFlow',
       'cancel': 'Cancelar',
       'save': 'Guardar',
+      'delete': 'Eliminar',
+      'edit': 'Editar',
+      'ok': 'OK',
+      'error': 'Error',
+      'loading': 'Cargando...',
       'map': 'Mapa',
       'parking': 'Aparcamiento',
       'drivingTime': 'Tiempo',
       'profile': 'Perfil',
+      'signOut': 'Cerrar sesión',
     },
   };
 
-  static const List<String> supportedLocales = ['en', 'pl', 'de', 'ro', 'es', 'bg', 'lt', 'tr'];
+  String _translate(String key) {
+    return _localizedValues[locale.languageCode]?[key] ??
+        _localizedValues['en']?[key] ??
+        key;
+  }
+
+  // Common
+  String get appName => _translate('appName');
+  String get cancel => _translate('cancel');
+  String get save => _translate('save');
+  String get delete => _translate('delete');
+  String get edit => _translate('edit');
+  String get ok => _translate('ok');
+  String get error => _translate('error');
+  String get loading => _translate('loading');
+
+  // Navigation
+  String get map => _translate('map');
+  String get parking => _translate('parking');
+  String get drivingTime => _translate('drivingTime');
+  String get profile => _translate('profile');
+
+  // Onboarding
+  String get getStarted => _translate('getStarted');
+  String get next => _translate('next');
+  String get skip => _translate('skip');
+  String get alreadyHaveAccount => _translate('alreadyHaveAccount');
+
+  // Auth
+  String get signIn => _translate('signIn');
+  String get signUp => _translate('signUp');
+  String get email => _translate('email');
+  String get password => _translate('password');
+  String get forgotPassword => _translate('forgotPassword');
+  String get continueWithGoogle => _translate('continueWithGoogle');
+
+  // Map
+  String get whereTo => _translate('whereTo');
+  String get reportHazard => _translate('reportHazard');
+  String get untilBreak => _translate('untilBreak');
+
+  // Hazards
+  String get police => _translate('police');
+  String get camera => _translate('camera');
+  String get accident => _translate('accident');
+  String get roadWorks => _translate('roadWorks');
+  String get closed => _translate('closed');
+  String get hazard => _translate('hazard');
+  String get weather => _translate('weather');
+  String get border => _translate('border');
+
+  // Parking
+  String get truckParking => _translate('truckParking');
+  String get free => _translate('free');
+  String get secured => _translate('secured');
+  String get available => _translate('available');
+  String get addParking => _translate('addParking');
+
+  // Compliance
+  String get drivingTimeTitle => _translate('drivingTimeTitle');
+  String get currentStatus => _translate('currentStatus');
+  String get driving => _translate('driving');
+  String get resting => _translate('resting');
+  String get onBreak => _translate('onBreak');
+  String get startBreak => _translate('startBreak');
+  String get startRest => _translate('startRest');
+  String get dailyLimits => _translate('dailyLimits');
+  String get weeklyLimits => _translate('weeklyLimits');
+
+  // Profile
+  String get myVehicle => _translate('myVehicle');
+  String get tripHistory => _translate('tripHistory');
+  String get savedPlaces => _translate('savedPlaces');
+  String get offlineMaps => _translate('offlineMaps');
+  String get language => _translate('language');
+  String get appearance => _translate('appearance');
+  String get notifications => _translate('notifications');
+  String get helpSupport => _translate('helpSupport');
+  String get about => _translate('about');
+  String get signOut => _translate('signOut');
+}
+
+class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
+  const _AppLocalizationsDelegate();
+
+  @override
+  bool isSupported(Locale locale) {
+    return AppLocalizations.supportedLocales
+        .map((l) => l.languageCode)
+        .contains(locale.languageCode);
+  }
+
+  @override
+  Future<AppLocalizations> load(Locale locale) async {
+    return AppLocalizations(locale);
+  }
+
+  @override
+  bool shouldReload(_AppLocalizationsDelegate old) => false;
 }

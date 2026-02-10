@@ -168,10 +168,10 @@ class _ParkingScreenState extends ConsumerState<ParkingScreen> {
                 ),
               ),
               const SizedBox(height: 12),
-              const TextField(
-                decoration: InputDecoration(
+              TextField(
+                keyboardType: TextInputType.number,
+                decoration: const InputDecoration(
                   labelText: 'Approximate spaces',
-                  keyboardType: TextInputType.number,
                 ),
               ),
               const SizedBox(height: 12),

@@ -31,7 +31,7 @@ class TruckFlowTheme {
       backgroundColor: Colors.white,
       foregroundColor: Colors.black87,
     ),
-    cardTheme: CardTheme(
+    cardTheme: CardThemeData(
       elevation: 2,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
@@ -75,7 +75,7 @@ class TruckFlowTheme {
       elevation: 0,
       backgroundColor: surfaceDark,
     ),
-    cardTheme: CardTheme(
+    cardTheme: CardThemeData(
       elevation: 4,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),

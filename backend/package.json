@@ -12,7 +12,8 @@
     "test:watch": "jest --watch",
     "migrate": "tsx src/migrations/run.ts",
     "migrate:down": "tsx src/migrations/down.ts",
-    "seed": "tsx src/seed/index.ts"
+    "seed": "tsx src/seed/index.ts",
+    "seed:parking": "tsx scripts/seed-parking.ts"
   },
   "dependencies": {
     "@fastify/cors": "^9.0.1",
