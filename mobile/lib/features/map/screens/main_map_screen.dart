@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import '../../../core/widgets/bottom_nav_bar.dart';
+import '../../../core/services/voice_input_service.dart';
 import '../providers/map_provider.dart';
 import '../providers/location_provider.dart';
 
@@ -18,6 +19,7 @@ class MainMapScreen extends ConsumerStatefulWidget {
 
 class _MainMapScreenState extends ConsumerState<MainMapScreen> {
   final MapController _mapController = MapController();
+  final VoiceInputService _voiceService = VoiceInputService();
   bool _locationInitialized = false;
 
   // Default center: Central Europe (good starting point for truck drivers)
@@ -338,36 +340,15 @@ class _MainMapScreenState extends ConsumerState<MainMapScreen> {
   void _showHazardReportSheet(BuildContext context) {
     showModalBottomSheet(
       context: context,
-      builder: (context) => Container(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Text('Report Hazard', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-            const SizedBox(height: 16),
-            Wrap(
-              spacing: 12,
-              runSpacing: 12,
-              children: [
-                _HazardButton(icon: Icons.local_police, label: 'Police', type: 'police', onTap: _reportHazard),
-                _HazardButton(icon: Icons.camera_alt, label: 'Camera', type: 'speed_camera', onTap: _reportHazard),
-                _HazardButton(icon: Icons.car_crash, label: 'Accident', type: 'accident', onTap: _reportHazard),
-                _HazardButton(icon: Icons.construction, label: 'Road Works', type: 'road_work', onTap: _reportHazard),
-                _HazardButton(icon: Icons.block, label: 'Closed', type: 'road_closure', onTap: _reportHazard),
-                _HazardButton(icon: Icons.warning, label: 'Hazard', type: 'hazard', onTap: _reportHazard),
-                _HazardButton(icon: Icons.cloud, label: 'Weather', type: 'weather', onTap: _reportHazard),
-                _HazardButton(icon: Icons.security, label: 'Border', type: 'border_delay', onTap: _reportHazard),
-              ],
-            ),
-            const SizedBox(height: 16),
-          ],
-        ),
+      isScrollControlled: true,
+      builder: (context) => _HazardReportSheet(
+        voiceService: _voiceService,
+        onReport: _reportHazard,
       ),
     );
   }
 
   void _reportHazard(String type) {
-    Navigator.pop(context);
     final mapState = ref.read(mapProvider);
     if (mapState.currentLocation != null) {
       ref.read(mapProvider.notifier).reportHazard(
@@ -491,5 +472,212 @@ class _ParkingMarker extends StatelessWidget {
       ),
       child: const Icon(Icons.local_parking, color: Colors.white, size: 24),
     );
+  }
+}
+
+class _HazardReportSheet extends StatefulWidget {
+  final VoiceInputService voiceService;
+  final void Function(String type) onReport;
+
+  const _HazardReportSheet({
+    required this.voiceService,
+    required this.onReport,
+  });
+
+  @override
+  State<_HazardReportSheet> createState() => _HazardReportSheetState();
+}
+
+class _HazardReportSheetState extends State<_HazardReportSheet> {
+  bool _isListening = false;
+  String _voiceText = '';
+  String? _detectedHazard;
+
+  @override
+  void initState() {
+    super.initState();
+    _initVoice();
+  }
+
+  Future<void> _initVoice() async {
+    await widget.voiceService.initialize();
+    widget.voiceService.onTextReceived = (text, isFinal) {
+      setState(() {
+        _voiceText = text;
+        if (isFinal) {
+          _detectedHazard = widget.voiceService.parseHazardType(text);
+          _isListening = false;
+        }
+      });
+    };
+    widget.voiceService.onStatusChanged = (status) {
+      if (status == 'done' || status == 'notListening') {
+        setState(() => _isListening = false);
+      }
+    };
+  }
+
+  Future<void> _toggleVoice() async {
+    if (_isListening) {
+      await widget.voiceService.stopListening();
+      setState(() => _isListening = false);
+    } else {
+      setState(() {
+        _isListening = true;
+        _voiceText = '';
+        _detectedHazard = null;
+      });
+      await widget.voiceService.startListening();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text('Report Hazard', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+              // Voice input button
+              GestureDetector(
+                onTap: _toggleVoice,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  decoration: BoxDecoration(
+                    color: _isListening ? Colors.red : Colors.blue,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        _isListening ? Icons.mic : Icons.mic_none,
+                        color: Colors.white,
+                        size: 20,
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        _isListening ? 'Listening...' : 'Voice',
+                        style: const TextStyle(color: Colors.white, fontSize: 14),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+
+          // Voice input feedback
+          if (_voiceText.isNotEmpty || _isListening)
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(12),
+              margin: const EdgeInsets.only(bottom: 12),
+              decoration: BoxDecoration(
+                color: Colors.grey[100],
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(
+                  color: _isListening ? Colors.blue : Colors.grey[300]!,
+                  width: _isListening ? 2 : 1,
+                ),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (_isListening)
+                    Row(
+                      children: [
+                        SizedBox(
+                          width: 16,
+                          height: 16,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: Colors.blue[400],
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          'Say the hazard type (e.g., "Police ahead")',
+                          style: TextStyle(color: Colors.grey[600], fontSize: 12),
+                        ),
+                      ],
+                    ),
+                  if (_voiceText.isNotEmpty) ...[
+                    const SizedBox(height: 8),
+                    Text('"$_voiceText"', style: const TextStyle(fontStyle: FontStyle.italic)),
+                  ],
+                  if (_detectedHazard != null) ...[
+                    const SizedBox(height: 8),
+                    Row(
+                      children: [
+                        const Icon(Icons.check_circle, color: Colors.green, size: 16),
+                        const SizedBox(width: 4),
+                        Text(
+                          'Detected: ${_getHazardLabel(_detectedHazard!)}',
+                          style: const TextStyle(color: Colors.green, fontWeight: FontWeight.bold),
+                        ),
+                        const Spacer(),
+                        ElevatedButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                            widget.onReport(_detectedHazard!);
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.green,
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                          ),
+                          child: const Text('Report'),
+                        ),
+                      ],
+                    ),
+                  ],
+                ],
+              ),
+            ),
+
+          // Manual selection
+          if (!_isListening)
+            const Text(
+              'Or tap to report:',
+              style: TextStyle(color: Colors.grey, fontSize: 12),
+            ),
+          const SizedBox(height: 12),
+          Wrap(
+            spacing: 12,
+            runSpacing: 12,
+            children: [
+              _HazardButton(icon: Icons.local_police, label: 'Police', type: 'police', onTap: (t) { Navigator.pop(context); widget.onReport(t); }),
+              _HazardButton(icon: Icons.camera_alt, label: 'Camera', type: 'camera', onTap: (t) { Navigator.pop(context); widget.onReport(t); }),
+              _HazardButton(icon: Icons.car_crash, label: 'Accident', type: 'accident', onTap: (t) { Navigator.pop(context); widget.onReport(t); }),
+              _HazardButton(icon: Icons.construction, label: 'Road Works', type: 'road_works', onTap: (t) { Navigator.pop(context); widget.onReport(t); }),
+              _HazardButton(icon: Icons.block, label: 'Closed', type: 'road_closure', onTap: (t) { Navigator.pop(context); widget.onReport(t); }),
+              _HazardButton(icon: Icons.warning, label: 'Hazard', type: 'road_hazard', onTap: (t) { Navigator.pop(context); widget.onReport(t); }),
+              _HazardButton(icon: Icons.cloud, label: 'Weather', type: 'weather', onTap: (t) { Navigator.pop(context); widget.onReport(t); }),
+              _HazardButton(icon: Icons.security, label: 'Border', type: 'border_delay', onTap: (t) { Navigator.pop(context); widget.onReport(t); }),
+            ],
+          ),
+          const SizedBox(height: 16),
+        ],
+      ),
+    );
+  }
+
+  String _getHazardLabel(String type) {
+    switch (type) {
+      case 'police': return 'Police';
+      case 'camera': return 'Speed Camera';
+      case 'accident': return 'Accident';
+      case 'road_works': return 'Road Works';
+      case 'road_closure': return 'Road Closed';
+      case 'road_hazard': return 'Road Hazard';
+      case 'weather': return 'Bad Weather';
+      case 'border_delay': return 'Border Delay';
+      default: return type;
+    }
   }
 }

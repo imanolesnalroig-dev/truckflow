@@ -85,6 +85,24 @@ class ComplianceStatus {
       untilDailyRestRequired: const Duration(hours: 9),
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'status': status.value,
+      'drivingTodayMinutes': drivingToday.inMinutes,
+      'breakTodayMinutes': breakToday.inMinutes,
+      'drivingThisWeekMinutes': drivingThisWeek.inMinutes,
+      'drivingLastTwoWeeksMinutes': drivingLastTwoWeeks.inMinutes,
+      'untilBreakRequiredMinutes': untilBreakRequired.inMinutes,
+      'untilDailyRestRequiredMinutes': untilDailyRestRequired.inMinutes,
+      'extendedDaysUsedThisWeek': extendedDaysUsedThisWeek,
+      'reducedRestsUsedThisWeek': reducedRestsUsedThisWeek,
+      'lastDailyRestEnded': lastDailyRestEnded?.toIso8601String(),
+      'lastWeeklyRestEnded': lastWeeklyRestEnded?.toIso8601String(),
+      'isCompliant': isCompliant,
+      'warnings': warnings,
+    };
+  }
 }
 
 enum DriverStatus {

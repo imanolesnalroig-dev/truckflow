@@ -126,8 +126,28 @@ class ApiClient {
     return _dio.get('/locations/$id');
   }
 
+  Future<Response> getLocationReviews(String id, {int limit = 20, int offset = 0}) async {
+    return _dio.get('/locations/$id/reviews', queryParameters: {
+      'limit': limit,
+      'offset': offset,
+    });
+  }
+
+  Future<Response> getLocationSummary(String id) async {
+    return _dio.get('/locations/$id/summary');
+  }
+
   Future<Response> reviewLocation(String id, Map<String, dynamic> review) async {
     return _dio.post('/locations/$id/reviews', data: review);
+  }
+
+  // Generic methods for flexible endpoints
+  Future<Response> get(String path, {Map<String, dynamic>? queryParameters}) async {
+    return _dio.get(path, queryParameters: queryParameters);
+  }
+
+  Future<Response> post(String path, Map<String, dynamic>? data) async {
+    return _dio.post(path, data: data);
   }
 
   // Parking
