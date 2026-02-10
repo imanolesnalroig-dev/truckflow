@@ -93,7 +93,7 @@ export default async function routeRoutes(app: FastifyInstance) {
           return reply.status(502).send({ error: 'Routing service error' });
         }
 
-        const result = await response.json();
+        const result = await response.json() as { trip: { legs: Array<{ shape: string; maneuvers?: Array<Record<string, unknown>> }>; summary: { length: number; time: number } } };
 
         // Transform Valhalla response
         const trip = result.trip;
@@ -120,8 +120,8 @@ export default async function routeRoutes(app: FastifyInstance) {
           })),
           warnings: [] // TODO: Add restriction warnings based on confidence
         });
-      } catch (error) {
-        app.log.error('Valhalla request failed:', error);
+      } catch (error: unknown) {
+        app.log.error({ err: error }, 'Valhalla request failed');
         return reply.status(502).send({ error: 'Routing service unavailable' });
       }
     }

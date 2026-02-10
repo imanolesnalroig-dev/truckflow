@@ -25,7 +25,7 @@ const createReviewSchema = z.object({
 export default async function locationRoutes(app: FastifyInstance) {
   // Search locations near point
   app.get('/', async (request: FastifyRequest, reply: FastifyReply) => {
-    const { lat, lng, radius_km = 10, type } = request.query as {
+    const { lat, lng, radius_km, type } = request.query as {
       lat: string;
       lng: string;
       radius_km?: string;
@@ -33,9 +33,9 @@ export default async function locationRoutes(app: FastifyInstance) {
     };
     const sql = getDb();
 
-    const radiusMeters = parseFloat(radius_km) * 1000;
+    const radiusMeters = parseFloat(radius_km || '10') * 1000;
 
-    let locations = await sql`
+    const locationsResult = await sql`
       SELECT id, name, address, location_type,
              ST_X(location::geometry) as lng, ST_Y(location::geometry) as lat,
              avg_waiting_time_min, avg_rating, total_reviews, ai_summary
@@ -52,9 +52,9 @@ export default async function locationRoutes(app: FastifyInstance) {
       LIMIT 50
     `;
 
-    if (type) {
-      locations = locations.filter((l: { location_type: string }) => l.location_type === type);
-    }
+    const locations = type
+      ? (locationsResult as Array<Record<string, unknown>>).filter((l) => l.location_type === type)
+      : locationsResult;
 
     return reply.send({ locations });
   });
@@ -83,7 +83,9 @@ export default async function locationRoutes(app: FastifyInstance) {
   // Get reviews for location
   app.get('/:id/reviews', async (request: FastifyRequest, reply: FastifyReply) => {
     const { id } = request.params as { id: string };
-    const { limit = 20, offset = 0 } = request.query as { limit?: string; offset?: string };
+    const { limit, offset } = request.query as { limit?: string; offset?: string };
+    const limitNum = limit ? parseInt(limit) : 20;
+    const offsetNum = offset ? parseInt(offset) : 0;
     const sql = getDb();
 
     const reviews = await sql`
@@ -96,7 +98,7 @@ export default async function locationRoutes(app: FastifyInstance) {
       JOIN users u ON r.user_id = u.id
       WHERE r.location_id = ${id}
       ORDER BY r.created_at DESC
-      LIMIT ${parseInt(limit)} OFFSET ${parseInt(offset)}
+      LIMIT ${limitNum} OFFSET ${offsetNum}
     `;
 
     return reply.send({ reviews });

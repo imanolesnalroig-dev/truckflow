@@ -136,7 +136,8 @@ export default async function complianceRoutes(app: FastifyInstance) {
     preHandler: [authenticate],
     handler: async (request: FastifyRequest, reply: FastifyReply) => {
       const { userId } = request.user as { userId: string };
-      const { days = 7 } = request.query as { days?: string };
+      const { days } = request.query as { days?: string };
+      const daysNum = days ? parseInt(days) : 7;
       const sql = getDb();
 
       const sessions = await sql`
@@ -144,7 +145,7 @@ export default async function complianceRoutes(app: FastifyInstance) {
                distance_km, is_compliant, violations
         FROM driving_sessions
         WHERE user_id = ${userId}
-          AND started_at >= NOW() - INTERVAL '1 day' * ${parseInt(days)}
+          AND started_at >= NOW() - INTERVAL '1 day' * ${daysNum}
         ORDER BY started_at DESC
       `;
 
@@ -157,7 +158,7 @@ export default async function complianceRoutes(app: FastifyInstance) {
                COUNT(*) as session_count
         FROM driving_sessions
         WHERE user_id = ${userId}
-          AND started_at >= NOW() - INTERVAL '1 day' * ${parseInt(days)}
+          AND started_at >= NOW() - INTERVAL '1 day' * ${daysNum}
         GROUP BY DATE(started_at)
         ORDER BY date DESC
       `;

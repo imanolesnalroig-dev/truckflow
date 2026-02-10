@@ -42,9 +42,9 @@ export default async function userRoutes(app: FastifyInstance) {
 
       const [user] = await sql`
         UPDATE users
-        SET display_name = COALESCE(${body.display_name}, display_name),
-            language = COALESCE(${body.language}, language),
-            country = COALESCE(${body.country}, country),
+        SET display_name = COALESCE(${body.display_name ?? null}, display_name),
+            language = COALESCE(${body.language ?? null}, language),
+            country = COALESCE(${body.country ?? null}, country),
             updated_at = NOW()
         WHERE id = ${userId}
         RETURNING id, email, display_name, language, country, updated_at

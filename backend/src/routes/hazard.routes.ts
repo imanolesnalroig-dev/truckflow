@@ -59,13 +59,13 @@ export default async function hazardRoutes(app: FastifyInstance) {
       `;
     }
 
-    const hazards = await query;
+    const hazards = await query as Array<Record<string, unknown>>;
 
     // Filter by types if specified
     let filtered = hazards;
     if (types) {
       const typeList = types.split(',');
-      filtered = hazards.filter((h: { hazard_type: string }) => typeList.includes(h.hazard_type));
+      filtered = hazards.filter((h) => typeList.includes(h.hazard_type as string));
     }
 
     return reply.send({ hazards: filtered });

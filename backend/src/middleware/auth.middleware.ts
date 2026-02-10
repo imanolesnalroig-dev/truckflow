@@ -8,19 +8,10 @@ export async function authenticate(request: FastifyRequest, reply: FastifyReply)
   }
 }
 
-// Extend Fastify types
-declare module 'fastify' {
-  interface FastifyRequest {
-    user?: {
-      userId: string;
-      email: string;
-    };
-  }
-}
-
+// Extend Fastify JWT types
 declare module '@fastify/jwt' {
   interface FastifyJWT {
-    payload: { userId: string; email: string };
-    user: { userId: string; email: string };
+    payload: { userId: string; email: string; type?: string };
+    user: { userId: string; email: string; type?: string };
   }
 }

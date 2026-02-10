@@ -10,14 +10,14 @@ const updateOccupancySchema = z.object({
 export default async function parkingRoutes(app: FastifyInstance) {
   // Find truck parking near point
   app.get('/', async (request: FastifyRequest, reply: FastifyReply) => {
-    const { lat, lng, radius_km = 50 } = request.query as {
+    const { lat, lng, radius_km } = request.query as {
       lat: string;
       lng: string;
       radius_km?: string;
     };
     const sql = getDb();
 
-    const radiusMeters = parseFloat(radius_km) * 1000;
+    const radiusMeters = parseFloat(radius_km || '50') * 1000;
 
     const parkings = await sql`
       SELECT id, name, address, country, total_spaces,

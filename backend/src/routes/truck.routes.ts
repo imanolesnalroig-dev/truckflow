@@ -79,17 +79,17 @@ export default async function truckRoutes(app: FastifyInstance) {
 
       const [truck] = await sql`
         UPDATE truck_profiles
-        SET name = COALESCE(${body.name}, name),
-            height_cm = COALESCE(${body.height_cm}, height_cm),
-            weight_kg = COALESCE(${body.weight_kg}, weight_kg),
-            length_cm = COALESCE(${body.length_cm}, length_cm),
-            width_cm = COALESCE(${body.width_cm}, width_cm),
-            axle_count = COALESCE(${body.axle_count}, axle_count),
-            axle_weight_kg = COALESCE(${body.axle_weight_kg}, axle_weight_kg),
-            has_trailer = COALESCE(${body.has_trailer}, has_trailer),
-            trailer_type = COALESCE(${body.trailer_type}, trailer_type),
-            hazmat_class = COALESCE(${body.hazmat_class}, hazmat_class),
-            emission_class = COALESCE(${body.emission_class}, emission_class)
+        SET name = COALESCE(${body.name ?? null}, name),
+            height_cm = COALESCE(${body.height_cm ?? null}, height_cm),
+            weight_kg = COALESCE(${body.weight_kg ?? null}, weight_kg),
+            length_cm = COALESCE(${body.length_cm ?? null}, length_cm),
+            width_cm = COALESCE(${body.width_cm ?? null}, width_cm),
+            axle_count = COALESCE(${body.axle_count ?? null}, axle_count),
+            axle_weight_kg = COALESCE(${body.axle_weight_kg ?? null}, axle_weight_kg),
+            has_trailer = COALESCE(${body.has_trailer ?? null}, has_trailer),
+            trailer_type = COALESCE(${body.trailer_type ?? null}, trailer_type),
+            hazmat_class = COALESCE(${body.hazmat_class ?? null}, hazmat_class),
+            emission_class = COALESCE(${body.emission_class ?? null}, emission_class)
         WHERE id = ${id} AND user_id = ${userId}
         RETURNING *
       `;

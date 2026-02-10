@@ -42,7 +42,7 @@ export default async function authRoutes(app: FastifyInstance) {
     // Generate tokens
     const token = app.jwt.sign({ userId: user.id, email: user.email });
     const refreshToken = app.jwt.sign(
-      { userId: user.id, type: 'refresh' },
+      { userId: user.id, email: user.email, type: 'refresh' },
       { expiresIn: '30d' }
     );
 
@@ -77,7 +77,7 @@ export default async function authRoutes(app: FastifyInstance) {
     // Generate tokens
     const token = app.jwt.sign({ userId: user.id, email: user.email });
     const refreshToken = app.jwt.sign(
-      { userId: user.id, type: 'refresh' },
+      { userId: user.id, email: user.email, type: 'refresh' },
       { expiresIn: '30d' }
     );
 
@@ -113,7 +113,7 @@ export default async function authRoutes(app: FastifyInstance) {
 
       const token = app.jwt.sign({ userId: user.id, email: user.email });
       const newRefreshToken = app.jwt.sign(
-        { userId: user.id, type: 'refresh' },
+        { userId: user.id, email: user.email, type: 'refresh' },
         { expiresIn: '30d' }
       );
 
