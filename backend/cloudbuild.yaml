@@ -18,23 +18,28 @@ steps:
 
   # Deploy to Cloud Run
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-    entrypoint: gcloud
+    entrypoint: bash
     args:
-      - 'run'
-      - 'deploy'
-      - 'truckflow-api'
-      - '--image=${_REGION}-docker.pkg.dev/${PROJECT_ID}/truckflow/api:${SHORT_SHA}'
-      - '--region=${_REGION}'
-      - '--platform=managed'
-      - '--allow-unauthenticated'
-      - '--memory=512Mi'
-      - '--cpu=1'
-      - '--min-instances=0'
-      - '--max-instances=10'
-      - '--add-cloudsql-instances=${PROJECT_ID}:${_REGION}:truckflow-db'
+      - '-c'
+      - |
+        gcloud run deploy truckflow-api \
+          --image=${_REGION}-docker.pkg.dev/${PROJECT_ID}/truckflow/api:${SHORT_SHA} \
+          --region=${_REGION} \
+          --platform=managed \
+          --allow-unauthenticated \
+          --memory=512Mi \
+          --cpu=1 \
+          --min-instances=0 \
+          --max-instances=10 \
+          --add-cloudsql-instances=${PROJECT_ID}:${_REGION}:truckflow-db \
+          --set-env-vars="NODE_ENV=production" \
+          --set-env-vars="DATABASE_URL=postgres://postgres:${_DB_PASSWORD}@/truckflow?host=/cloudsql/${PROJECT_ID}:${_REGION}:truckflow-db" \
+          --set-env-vars="REDIS_URL=redis://${_REDIS_IP}:6379"
 
 substitutions:
   _REGION: europe-west1
+  _DB_PASSWORD: changeme123
+  _REDIS_IP: 10.14.115.203
 
 options:
   logging: CLOUD_LOGGING_ONLY
