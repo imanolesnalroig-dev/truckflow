@@ -11,8 +11,14 @@ This project uses CI/CD with GitHub and Cloud Build:
 ### Cloud Infrastructure
 - **Cloud Run**: `truckflow-api` in `europe-west1`
 - **Cloud SQL**: PostgreSQL 15 at `truckflow-app:europe-west1:truckflow-db`
-- **Memorystore Redis**: `10.14.115.203:6379`
+- **Memorystore Redis**: `10.14.115.203:6379` (requires VPC connector)
 - **API URL**: https://truckflow-api-794599390333.europe-west1.run.app
+
+### Environment Variables
+Environment variables (DATABASE_URL, REDIS_URL, JWT_SECRET) are managed directly on Cloud Run, NOT in cloudbuild.yaml. Cloud Build only deploys the image. To update env vars:
+```bash
+gcloud run services update truckflow-api --region=europe-west1 --update-env-vars=KEY=VALUE
+```
 
 ## Database
 
