@@ -14,14 +14,12 @@ This project uses CI/CD with GitHub and Cloud Build:
 - **Memorystore Redis**: `10.14.115.203:6379` (requires VPC connector)
 - **API URL**: https://truckflow-api-794599390333.europe-west1.run.app
 
-### Environment Variables
-**IMPORTANT**: After each Cloud Build deployment, you must manually set the database env vars:
+### Secrets (Google Secret Manager)
+DATABASE_URL and REDIS_URL are stored in Secret Manager and automatically injected at deploy time.
+To update a secret:
 ```bash
-gcloud run services update truckflow-api --region=europe-west1 --project=truckflow-app \
-  --update-env-vars='DATABASE_URL=postgres://postgres:changeme123@/truckflow?host=/cloudsql/truckflow-app:europe-west1:truckflow-db' \
-  --update-env-vars='REDIS_URL=redis://10.14.115.203:6379'
+echo -n 'new-value' | gcloud secrets versions add SECRET_NAME --data-file=- --project=truckflow-app
 ```
-This is due to Cloud Build's limitations with special characters in env var values.
 
 ## Database
 

@@ -16,7 +16,7 @@ steps:
       - '--all-tags'
       - '${_REGION}-docker.pkg.dev/${PROJECT_ID}/truckflow/api'
 
-  # Deploy to Cloud Run
+  # Deploy to Cloud Run with secrets
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: gcloud
     args:
@@ -33,32 +33,10 @@ steps:
       - '--max-instances=10'
       - '--add-cloudsql-instances=${PROJECT_ID}:${_REGION}:truckflow-db'
       - '--set-env-vars=NODE_ENV=production'
-
-  # Set remaining env vars (separate step to handle special characters)
-  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-    entrypoint: gcloud
-    args:
-      - 'run'
-      - 'services'
-      - 'update'
-      - 'truckflow-api'
-      - '--region=${_REGION}'
-      - '--update-env-vars=DATABASE_URL=postgres://postgres:${_DB_PASSWORD}@/truckflow?host=/cloudsql/${PROJECT_ID}:${_REGION}:truckflow-db'
-
-  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-    entrypoint: gcloud
-    args:
-      - 'run'
-      - 'services'
-      - 'update'
-      - 'truckflow-api'
-      - '--region=${_REGION}'
-      - '--update-env-vars=REDIS_URL=redis://${_REDIS_IP}:6379'
+      - '--set-secrets=DATABASE_URL=DATABASE_URL:latest,REDIS_URL=REDIS_URL:latest'
 
 substitutions:
   _REGION: europe-west1
-  _DB_PASSWORD: changeme123
-  _REDIS_IP: 10.14.115.203
 
 options:
   logging: CLOUD_LOGGING_ONLY
