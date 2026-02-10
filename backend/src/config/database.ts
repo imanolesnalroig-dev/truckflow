@@ -3,27 +3,42 @@ import { config } from './index.js';
 
 let sql: ReturnType<typeof postgres>;
 
-export async function setupDatabase() {
-  sql = postgres(config.databaseUrl, {
+// Parse Cloud SQL connection string with Unix socket support
+function parseConnectionString(url: string) {
+  const parsed = new URL(url);
+  const hostParam = parsed.searchParams.get('host');
+
+  const options: Record<string, unknown> = {
+    user: parsed.username,
+    password: parsed.password,
+    database: parsed.pathname.slice(1) || 'postgres',
     max: 20,
     idle_timeout: 20,
     connect_timeout: 10,
-    types: {
-      // Handle PostGIS geography type
-      geography: {
-        to: 4326,
-        from: [4326],
-        serialize: (x: { lat: number; lng: number }) => `POINT(${x.lng} ${x.lat})`,
-        parse: (x: string) => {
-          const match = x.match(/POINT\(([-\d.]+) ([-\d.]+)\)/);
-          if (match) {
-            return { lng: parseFloat(match[1]), lat: parseFloat(match[2]) };
-          }
-          return null;
-        }
-      }
-    }
+  };
+
+  // If host query param starts with /, it's a Unix socket path
+  if (hostParam && hostParam.startsWith('/')) {
+    options.host = hostParam;
+  } else if (parsed.hostname) {
+    options.host = parsed.hostname;
+    options.port = parseInt(parsed.port || '5432');
+  }
+
+  return options;
+}
+
+export async function setupDatabase() {
+  const connectionOptions = parseConnectionString(config.databaseUrl);
+
+  console.log('Connecting to database:', {
+    host: connectionOptions.host,
+    database: connectionOptions.database,
+    user: connectionOptions.user
   });
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  sql = postgres(connectionOptions as any);
 
   // Test connection
   try {
