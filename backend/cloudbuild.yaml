@@ -31,7 +31,8 @@ steps:
       - '--cpu=1'
       - '--min-instances=0'
       - '--max-instances=10'
-      - '--set-env-vars=NODE_ENV=production'
+      - '--add-cloudsql-instances=${PROJECT_ID}:${_REGION}:truckflow-db'
+      - '--update-env-vars=NODE_ENV=production,DATABASE_URL=postgres://postgres:changeme123@/truckflow?host=/cloudsql/${PROJECT_ID}:${_REGION}:truckflow-db,REDIS_URL=redis://10.14.115.203:6379'
 
 substitutions:
   _REGION: europe-west1
