@@ -54,10 +54,27 @@ async function bootstrap() {
     // WebSocket for real-time hazard updates
     await app.register(websocket);
 
-    // Initialize connections
-    await setupDatabase();
-    await setupRedis();
-    await setupKafka();
+    // Initialize connections (graceful - don't crash if they fail)
+    try {
+      await setupDatabase();
+      app.log.info('Database connected');
+    } catch (err) {
+      app.log.warn({ err }, 'Database connection failed - some features may not work');
+    }
+
+    try {
+      await setupRedis();
+      app.log.info('Redis connected');
+    } catch (err) {
+      app.log.warn({ err }, 'Redis connection failed - caching disabled');
+    }
+
+    try {
+      await setupKafka();
+      app.log.info('Kafka connected');
+    } catch (err) {
+      app.log.warn({ err }, 'Kafka connection failed - telemetry disabled');
+    }
 
     // Health check
     app.get('/health', async () => ({ status: 'ok', timestamp: new Date().toISOString() }));

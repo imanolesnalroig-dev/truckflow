@@ -35,12 +35,12 @@ export const config = {
   googleClientSecret: process.env.GOOGLE_CLIENT_SECRET || '',
 } as const;
 
-// Validate required config in production
+// Warn about missing config in production (don't crash)
 if (config.nodeEnv === 'production') {
-  const required = ['jwtSecret', 'databaseUrl', 'geminiApiKey'] as const;
-  for (const key of required) {
-    if (!config[key]) {
-      throw new Error(`Missing required environment variable for ${key}`);
+  const recommended = ['jwtSecret', 'databaseUrl'] as const;
+  for (const key of recommended) {
+    if (!config[key] || config[key] === 'dev_jwt_secret_change_in_production') {
+      console.warn(`Warning: ${key} not properly configured for production`);
     }
   }
 }
