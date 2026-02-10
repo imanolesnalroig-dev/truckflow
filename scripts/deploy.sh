@@ -33,11 +33,11 @@ gcloud artifacts repositories create truckflow \
 # Create Cloud SQL instance (PostgreSQL with PostGIS)
 echo "🗄️ Creating Cloud SQL instance..."
 gcloud sql instances create truckflow-db \
-  --database-version=POSTGRES_16 \
+  --database-version=POSTGRES_15 \
+  --edition=ENTERPRISE \
   --tier=db-f1-micro \
   --region=$REGION \
   --root-password=changeme123 \
-  --database-flags=cloudsql.enable_pg_cron=on \
   --quiet || echo "Cloud SQL instance may already exist"
 
 # Create database
