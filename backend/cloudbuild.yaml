@@ -22,6 +22,12 @@ steps:
     args:
       - '-c'
       - |
+        cat > /tmp/env.yaml << ENVEOF
+        NODE_ENV: production
+        DATABASE_URL: "postgres://postgres:${_DB_PASSWORD}@/truckflow?host=/cloudsql/${PROJECT_ID}:${_REGION}:truckflow-db"
+        REDIS_URL: "redis://${_REDIS_IP}:6379"
+        ENVEOF
+
         gcloud run deploy truckflow-api \
           --image=${_REGION}-docker.pkg.dev/${PROJECT_ID}/truckflow/api:${SHORT_SHA} \
           --region=${_REGION} \
@@ -32,7 +38,7 @@ steps:
           --min-instances=0 \
           --max-instances=10 \
           --add-cloudsql-instances=${PROJECT_ID}:${_REGION}:truckflow-db \
-          --set-env-vars="^|^NODE_ENV=production|DATABASE_URL=postgres://postgres:${_DB_PASSWORD}@/truckflow?host=/cloudsql/${PROJECT_ID}:${_REGION}:truckflow-db|REDIS_URL=redis://${_REDIS_IP}:6379"
+          --env-vars-file=/tmp/env.yaml
 
 substitutions:
   _REGION: europe-west1
