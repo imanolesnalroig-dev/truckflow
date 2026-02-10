@@ -33,7 +33,8 @@ steps:
       - '--max-instances=10'
       - '--add-cloudsql-instances=${PROJECT_ID}:${_REGION}:truckflow-db'
       - '--set-env-vars=NODE_ENV=production'
-      - '--set-secrets=DATABASE_URL=DATABASE_URL:latest,REDIS_URL=REDIS_URL:latest'
+      - '--set-secrets=DATABASE_URL=DATABASE_URL:latest'
+      - '--set-secrets=REDIS_URL=REDIS_URL:latest'
 
 substitutions:
   _REGION: europe-west1
