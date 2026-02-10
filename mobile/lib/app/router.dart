@@ -6,6 +6,7 @@ import '../features/auth/screens/register_screen.dart';
 import '../features/auth/screens/onboarding_screen.dart';
 import '../features/map/screens/main_map_screen.dart';
 import '../features/routing/screens/route_planning_screen.dart';
+import '../features/routing/screens/location_search_screen.dart';
 import '../features/compliance/screens/driving_time_dashboard.dart';
 import '../features/parking/screens/parking_screen.dart';
 import '../features/locations/screens/location_detail_screen.dart';
@@ -37,6 +38,12 @@ final routerProvider = Provider<GoRouter>((ref) {
           GoRoute(
             path: '/route',
             builder: (context, state) => const RoutePlanningScreen(),
+          ),
+          GoRoute(
+            path: '/search-location/:fieldType',
+            builder: (context, state) => LocationSearchScreen(
+              fieldType: state.pathParameters['fieldType'] ?? 'destination',
+            ),
           ),
           GoRoute(
             path: '/compliance',
