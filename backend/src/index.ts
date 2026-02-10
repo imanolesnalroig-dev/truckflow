@@ -76,6 +76,23 @@ async function bootstrap() {
       app.log.warn({ err }, 'Kafka connection failed - telemetry disabled');
     }
 
+    // Root route - API info
+    app.get('/', async () => ({
+      name: 'TruckFlow API',
+      version: '1.0.0',
+      description: 'Truck navigation and compliance API for European FTL drivers',
+      endpoints: {
+        health: '/health',
+        auth: '/api/v1/auth',
+        trucks: '/api/v1/trucks',
+        route: '/api/v1/route',
+        compliance: '/api/v1/compliance',
+        hazards: '/api/v1/hazards',
+        locations: '/api/v1/locations',
+        parking: '/api/v1/parking'
+      }
+    }));
+
     // Health check
     app.get('/health', async () => ({ status: 'ok', timestamp: new Date().toISOString() }));
 
