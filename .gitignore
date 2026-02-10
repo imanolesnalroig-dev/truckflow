@@ -1,0 +1,69 @@
+# Dependencies
+node_modules/
+.dart_tool/
+.packages
+
+# Build outputs
+build/
+dist/
+*.js.map
+*.js
+!jest.config.js
+
+# Environment
+.env
+.env.local
+.env.*.local
+*.local.env
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# Testing
+coverage/
+.nyc_output/
+
+# Flutter
+mobile/.flutter-plugins
+mobile/.flutter-plugins-dependencies
+mobile/.dart_tool/
+mobile/build/
+mobile/android/.gradle/
+mobile/android/local.properties
+mobile/ios/Pods/
+mobile/ios/.symlinks/
+mobile/ios/Flutter/Flutter.framework
+mobile/ios/Flutter/Flutter.podspec
+mobile/*.iml
+
+# Docker
+.docker/
+
+# Valhalla tiles (large files)
+routing/tiles/
+routing/*.pbf
+valhalla_tiles/
+
+# Secrets
+*.pem
+*.key
+service-account.json
+credentials.json
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfvars
+
+# Coverage
+lcov.info

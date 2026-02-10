@@ -1,0 +1,143 @@
+version: '3.8'
+
+services:
+  # PostgreSQL with PostGIS and TimescaleDB
+  postgres:
+    image: timescale/timescaledb-ha:pg16
+    container_name: truckflow-postgres
+    environment:
+      POSTGRES_DB: truckflow
+      POSTGRES_USER: truckflow
+      POSTGRES_PASSWORD: dev_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/home/postgres/pgdata
+      - ./backend/migrations/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    command: >
+      postgres
+      -c shared_preload_libraries='timescaledb'
+      -c timescaledb.telemetry_level=off
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U truckflow -d truckflow"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis for caching
+  redis:
+    image: redis:7-alpine
+    container_name: truckflow-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redisdata:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Kafka for GPS telemetry pipeline
+  kafka:
+    image: confluentinc/cp-kafka:7.5.0
+    container_name: truckflow-kafka
+    environment:
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093,EXTERNAL://0.0.0.0:9094
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,EXTERNAL://localhost:9094
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,EXTERNAL:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      CLUSTER_ID: 'truckflow-dev-cluster-001'
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_LOG_RETENTION_HOURS: 168
+      KAFKA_LOG_SEGMENT_BYTES: 1073741824
+    ports:
+      - "9092:9092"
+      - "9094:9094"
+    volumes:
+      - kafkadata:/var/lib/kafka/data
+    healthcheck:
+      test: ["CMD-SHELL", "kafka-topics --bootstrap-server localhost:9092 --list"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  # Valhalla routing engine
+  valhalla:
+    image: ghcr.io/gis-ops/docker-valhalla/valhalla:latest
+    container_name: truckflow-valhalla
+    volumes:
+      - ./routing/custom_files:/custom_files
+      - valhalla_tiles:/data/valhalla
+    environment:
+      # Start with Poland for MVP testing (smaller, faster to build)
+      tile_urls: https://download.geofabrik.de/europe/poland-latest.osm.pbf
+      serve_tiles: "True"
+      build_elevation: "False"
+      build_admins: "True"
+      build_time_zones: "True"
+      use_tiles_ignore_pbf: "False"
+      force_rebuild: "False"
+    ports:
+      - "8002:8002"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8002/status"]
+      interval: 30s
+      timeout: 10s
+      retries: 10
+      start_period: 300s
+
+  # OpenMapTiles tile server for map rendering
+  tileserver:
+    image: maptiler/tileserver-gl:latest
+    container_name: truckflow-tileserver
+    volumes:
+      - ./routing/tiles:/data
+    ports:
+      - "8080:8080"
+    command: --verbose
+
+  # Backend API
+  api:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: truckflow-api
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL: postgres://truckflow:dev_password@postgres:5432/truckflow
+      REDIS_URL: redis://redis:6379
+      KAFKA_BROKERS: kafka:9092
+      VALHALLA_URL: http://valhalla:8002
+      GEMINI_API_KEY: ${GEMINI_API_KEY}
+      GOOGLE_PLACES_API_KEY: ${GOOGLE_PLACES_API_KEY}
+      JWT_SECRET: ${JWT_SECRET:-dev_jwt_secret_change_in_production}
+      NODE_ENV: development
+      PORT: 3000
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+    volumes:
+      - ./backend/src:/app/src:ro
+    command: npm run dev
+
+volumes:
+  pgdata:
+  redisdata:
+  kafkadata:
+  valhalla_tiles:
+
+networks:
+  default:
+    name: truckflow-network
