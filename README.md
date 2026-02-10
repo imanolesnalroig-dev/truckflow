@@ -90,3 +90,4 @@ JWT_SECRET=your_jwt_secret
 ## License
 
 Proprietary - All rights reserved
+# Auto-deployed via Cloud Build
