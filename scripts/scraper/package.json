@@ -1,0 +1,13 @@
+{
+  "name": "timocom-scraper",
+  "version": "1.0.0",
+  "description": "Timocom Lithuanian company data scraper",
+  "scripts": {
+    "scrape": "node scraper.mjs",
+    "scrape:headed": "HEADLESS=false node scraper.mjs"
+  },
+  "dependencies": {
+    "playwright": "^1.49.0",
+    "exceljs": "^4.4.0"
+  }
+}
