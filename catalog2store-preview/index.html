@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow"><meta name="description" content="Catalog2Store early preview and private, browser-only Shopify CSV validator.">
+<title>Catalog2Store — Supplier catalog tools</title>
+<style>
+:root{--ink:#172c48;--sub:#577087;--line:#dce6ef;--light:#f3f7fc;--blue:#285af1;--green:#147651}
+*{box-sizing:border-box}body{margin:0;font:15px/1.55 system-ui,-apple-system,Segoe UI,sans-serif;background:#f8fbff;color:var(--ink)}a{color:var(--blue)}
+.container{max-width:1060px;margin:auto;padding:0 22px}header{background:#fff;border-bottom:1px solid var(--line)}nav{display:flex;align-items:center;justify-content:space-between;min-height:77px;gap:20px}.brand{font-size:22px;font-weight:800;letter-spacing:-1px;color:var(--ink);text-decoration:none}.brand em{font-style:normal;color:var(--blue)}.navright{display:flex;gap:16px;align-items:center;font-size:13px}.pill{border-radius:100px;padding:7px 12px;color:#24634b;background:#e9f7ef;font-size:12px;font-weight:750}
+.hero{padding:76px 0 49px;background:radial-gradient(ellipse at 80% 0%,#e4efff 0,transparent 53%)}.hero-grid{display:grid;grid-template-columns:1.13fr .87fr;gap:38px;align-items:center}.eyebrow{font-size:12px;letter-spacing:2px;text-transform:uppercase;font-weight:800;color:var(--blue)}h1{font-size:clamp(39px,5.7vw,65px);letter-spacing:-3px;line-height:1.07;margin:18px 0}h1 span{color:var(--blue)}p.lead{font-size:17px;color:var(--sub);max-width:600px;margin-bottom:25px}.btn{display:inline-flex;align-items:center;justify-content:center;background:var(--blue);color:white;text-decoration:none;border:0;padding:14px 20px;border-radius:11px;font-size:14px;font-weight:750;cursor:pointer}.btn:hover{background:#1d46c5}.btn.alt{background:white;color:var(--ink);border:1px solid var(--line)}.actions{display:flex;gap:10px;flex-wrap:wrap}.small{font-size:12px;color:var(--sub)}.small-spaced{margin-top:19px}
+.preview{background:#fff;box-shadow:0 18px 60px #1b4a9017;border:1px solid var(--line);border-radius:17px;padding:24px;transform:rotate(1deg)}.preview .muted{font-size:12px;color:var(--sub)}.diagram{display:grid;grid-template-columns:1fr 24px 1fr;gap:9px;align-items:center;margin:20px 0}.file{background:var(--light);border-radius:13px;padding:18px 8px;text-align:center}.file strong{font-size:20px}.file small{display:block;color:var(--sub);font-size:11px}.arr{text-align:center;color:var(--blue)}.banner{background:#fff9e9;color:#81581e;border-radius:10px;padding:12px;font-size:12px;font-weight:650}
+.section{padding:45px 0}.section h2{font-size:32px;line-height:1.1;letter-spacing:-1px;margin:0 0 12px}.section .intro{color:var(--sub);margin:0 0 22px}.tool{display:grid;grid-template-columns:1fr 1fr;gap:18px}.panel{border:1px solid var(--line);background:white;border-radius:16px;padding:25px}.panel h3{margin:0 0 8px;font-size:19px}.drop{display:block;cursor:pointer;text-align:center;border:2px dashed #acbed4;border-radius:14px;background:#f9fbff;padding:37px 16px;margin:19px 0}.drop:hover,.drop.drag{border-color:var(--blue);background:#eef4ff}.drop strong{display:block;margin-bottom:6px}input[type=file]{max-width:100%;font:inherit;font-size:12px;color:var(--sub)}.feedback{font-size:13px;border-radius:10px;padding:13px;margin-top:18px;display:none}.feedback.ok{display:block;background:#eaf7ef;color:#155b3e}.feedback.warn{display:block;background:#fff5e5;color:#704b09}.feedback.error{display:block;background:#fff0f0;color:#973131}.results{font-size:13px;color:var(--sub);margin-top:15px;white-space:pre-wrap;overflow-wrap:anywhere}.muted{color:var(--sub)}.features{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.feature{background:white;border:1px solid var(--line);border-radius:12px;padding:22px}.feature strong{display:block;margin-bottom:6px}.feature p{font-size:13px;color:var(--sub);margin:0}.footer{border-top:1px solid var(--line);padding:27px 0 40px;font-size:12px;color:var(--sub)}button:disabled{opacity:.45;cursor:not-allowed}
+@media(max-width:730px){.hero{padding:49px 0 32px}.hero-grid,.tool{grid-template-columns:1fr}.features{grid-template-columns:1fr}h1{letter-spacing:-1.7px}.preview{transform:none}.navright{gap:8px}nav{min-height:68px}}
+</style></head>
+<body>
+<header><div class="container"><nav><a class="brand" href="/">▦ Catalog<em>2Store</em></a><div class="navright"><a href="#checker">Free CSV checker</a><span class="pill">Early preview</span></div></nav></div></header>
+<main><section class="hero"><div class="container hero-grid"><div><div class="eyebrow">Simpler supplier catalog imports</div><h1>Supplier PDFs in.<br><span>Shopify CSVs out.</span></h1><p class="lead">Catalog2Store is preparing a self-service PDF conversion tool for structured supplier price lists. Meanwhile, test our free Shopify CSV checker below—no account or calls required.</p><div class="actions"><a class="btn" href="#checker">Use free CSV checker ↗</a><a class="btn alt" href="#process">How it works</a></div><p class="small small-spaced">PDF conversion and checkout are not yet publicly available. No payment can be taken here.</p></div>
+<div class="preview"><div class="eyebrow">Catalog2Store · concept preview</div><div class="diagram"><div class="file"><strong>PDF</strong><small>Supplier catalog</small></div><div class="arr">→</div><div class="file"><strong>CSV</strong><small>Shopify draft products</small></div></div><div class="banner">Not available yet · Complex variants and image extraction are not supported by the current MVP.</div><p class="muted" style="font-size:12px;margin-bottom:0">Planned one-time price: €19 per supported catalog, subject to validation.</p></div>
+</div></section>
+<section class="section" id="checker"><div class="container"><div class="eyebrow">Free utility · Available now</div><h2>Shopify CSV checker</h2><p class="intro">Choose an existing Shopify product CSV file to check headers, prices and obvious data issues. Your file is processed entirely on this device; nothing is uploaded.</p>
+<div class="tool"><div class="panel"><h3>Check your file</h3><p class="muted">Comma-separated .csv files up to 2 MB. This checker is intended for simple Shopify product rows, not advanced variant configurations.</p><label for="csvfile" class="drop" id="drop"><strong>📄 Choose or drop a CSV file</strong><input id="csvfile" type="file" accept=".csv,text/csv"><span class="small">Private, in-browser only</span></label><button type="button" id="example" class="btn alt">Download a sample CSV ↓</button><div id="feedback" class="feedback" role="status" aria-live="polite"></div></div>
+<div class="panel"><h3>Validation results</h3><p class="muted">Checks are informational and not a guarantee that Shopify will accept your import. Always import products as drafts and review them.</p><div id="results" class="results">Choose a file to see results here.</div></div></div></div></section>
+<section class="section" id="process" style="padding-top:10px"><div class="container"><h2>What we're building</h2><p class="intro">A narrow, reliable workflow—not a universal PDF converter that invents missing prices.</p><div class="features"><div class="feature"><strong>1. Upload a supported PDF</strong><p>Text-based supplier tables with clear SKUs and prices. Scans and complex layouts may be rejected.</p></div><div class="feature"><strong>2. Preview before paying</strong><p>Review product names, SKUs and prices and reject uncertain data rather than guessing.</p></div><div class="feature"><strong>3. Export as Shopify drafts</strong><p>A CSV for review before import and publication, with no recurring commitment.</p></div></div></div></section></main>
+<footer class="footer"><div class="container">Catalog2Store early preview · No checkout or supplier PDF upload is available. All CSV validation stays in your browser. © 2026 Catalog2Store.</div></footer>
+<script>
+(function(){
+'use strict';
+var file=document.getElementById('csvfile'),drop=document.getElementById('drop'),feedback=document.getElementById('feedback'),out=document.getElementById('results');
+function notice(kind,s){feedback.className='feedback '+kind;feedback.textContent=s}
+function parseCSV(text){
+  var rows=[],row=[],field='',quoted=false;
+  for(var i=0;i<text.length;i++){
+    var c=text[i];
+    if(quoted){if(c==='"'&&text[i+1]==='"'){field+='"';i++}else if(c==='"'){quoted=false}else field+=c}
+    else if(c==='"'){if(field!=='')throw new Error('Unexpected quote near character '+(i+1));quoted=true}
+    else if(c===','){row.push(field);field=''}
+    else if(c==='\n'||c==='\r'){if(c==='\r'&&text[i+1]==='\n')i++;row.push(field);if(row.some(function(v){return v.trim()!==''}))rows.push(row);row=[];field=''}
+    else field+=c;
+    if(rows.length>2001)throw new Error('This preview accepts a maximum of 2,000 rows.');
+  }
+  if(quoted)throw new Error('Unclosed quoted field.');
+  if(field!==''||row.length){row.push(field);if(row.some(function(v){return v.trim()!==''}))rows.push(row)}
+  return rows;
+}
+function validate(raw){
+  var rows=parseCSV(raw.replace(/^\uFEFF/,''));
+  if(rows.length<2)throw new Error('CSV needs a header and at least one product row.');
+  var head=rows[0].map(function(x){return x.trim()}),idx={};
+  head.forEach(function(h,i){if(h && idx[h]!==undefined)throw new Error('Duplicate header: '+h);idx[h]=i});
+  if(!('Title' in idx))throw new Error('Missing required Title column.');
+  var errs=[],warns=[],seen={};
+  if(!('Price' in idx))warns.push('No Price column found.');
+  if(!('URL handle' in idx))warns.push('No URL handle column found.');
+  for(var j=1;j<rows.length;j++){
+    var r=rows[j],get=function(k){return idx[k]===undefined?'':(r[idx[k]]||'').trim()};
+    if(r.length!==head.length)errs.push('Row '+(j+1)+': '+r.length+' columns, expected '+head.length);
+    if(!get('Title')&&!get('URL handle'))warns.push('Row '+(j+1)+': missing product title and handle');
+    if('Price' in idx){var price=get('Price');if(price&&!/^[0-9]+(\.[0-9]{1,2})?$/.test(price))errs.push('Row '+(j+1)+': price must be a number with a decimal point');}
+    var sku=get('SKU');if(sku){if(seen[sku])warns.push('Row '+(j+1)+': duplicate SKU '+sku);seen[sku]=true}
+    var status=get('Status').toLowerCase();if(status&&!['active','draft','archived'].includes(status))warns.push('Row '+(j+1)+': unexpected status '+status);
+  }
+  return {count:rows.length-1,columns:head.length,errors:errs,warnings:warns};
+}
+async function inspect(f){
+  feedback.className='feedback';out.textContent='';
+  if(!f){return}if(f.size>2*1024*1024){notice('error','File exceeds 2 MB.');return}
+  if(!/\.csv$/i.test(f.name)){notice('error','Please choose a .csv file.');return}
+  try{var result=validate(await f.text());var errorCount=result.errors.length,warnCount=result.warnings.length;
+    notice(errorCount?'error':warnCount?'warn':'ok',errorCount?'Issues found. Please review before importing.':warnCount?'Checked with warnings; please review.':'No issues detected by the basic checker.');
+    var lines=['Product rows: '+result.count,'Columns: '+result.columns,'Errors: '+errorCount,'Warnings: '+warnCount,''];
+    result.errors.slice(0,15).forEach(function(s){lines.push('ERROR · '+s)});
+    result.warnings.slice(0,15).forEach(function(s){lines.push('CHECK · '+s)});
+    if(errorCount+warnCount>30)lines.push('More issues exist; only the first 15 of each type are displayed.');
+    out.textContent=lines.join('\n');
+  }catch(e){notice('error',e.message);out.textContent='Unable to validate this CSV.'}
+}
+file.addEventListener('change',function(){inspect(file.files[0])});
+drop.addEventListener('dragover',function(e){e.preventDefault();drop.classList.add('drag')});
+drop.addEventListener('dragleave',function(){drop.classList.remove('drag')});
+drop.addEventListener('drop',function(e){e.preventDefault();drop.classList.remove('drag');inspect(e.dataTransfer.files[0])});
+document.getElementById('example').addEventListener('click',function(){
+ var s='Title,URL handle,Description,Vendor,SKU,Price,Barcodes,Option1 name,Option1 value,Status\r\nSteel Bottle,steel-bottle,Stainless bottle,SampleSupplier,ST-100,12.50,4012345678901,Title,Default Title,draft\r\nCotton Tote,cotton-tote,Reusable tote,SampleSupplier,TOTE-001,6.90,4012345678902,Title,Default Title,draft\r\n';
+ var blob=new Blob(['\uFEFF'+s],{type:'text/csv;charset=utf-8'});
+ var a=document.createElement('a'),url=URL.createObjectURL(blob);a.href=url;a.download='catalog2store-example.csv';a.click();setTimeout(function(){URL.revokeObjectURL(url)},1000);
+});
+})();
+</script>
+</body></html>
